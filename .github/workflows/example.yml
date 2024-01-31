@@ -1,0 +1,54 @@
+name: Example
+
+on:
+  pull_request:
+    branches:
+      - "*"
+  push:
+    branches:
+      - "develop"
+      - "main"
+      - "master"
+
+concurrency:
+  group:
+    ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  miniconda:
+    name: miniconda
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jezdez/setup-miniconda@arm64
+        with:
+          architecture: ARM64
+          miniconda-version: latest
+          auto-update-conda: true
+          python-version: "3.11"
+  mambaforge:
+    name: mambaforge
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jezdez/setup-miniconda@arm64
+        with:
+          architecture: ARM64
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+  miniforge:
+    name: miniforge
+    runs-on: macos-14
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jezdez/setup-miniconda@arm64
+        with:
+          architecture: ARM64
+          miniforge-version: latest
